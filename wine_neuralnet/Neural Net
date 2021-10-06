@@ -1,0 +1,79 @@
+setwd("H:/R/")
+getwd()
+library(neuralnet)
+#assessed XOR
+#XOR gate input data
+trainin = rbind(c(1,1), c(1,-1), c(-1,1), c(-1,-1));
+#XOR gate output data
+trainout = rbind(0, 1, 1, 0);
+#Combined OR gate data
+XORdat=cbind(trainout,trainin)
+
+#train a neural network on the XOR data
+set.seed(2)
+NN = neuralnet(XORdat[,1]~., XORdat[,-1], hidden = c(3,3) , threshold = 0.001, stepmax = 1e+05, linear.output = FALSE)
+
+#visualise the NN
+plot(NN)
+
+#Testing the neural net
+testin = rbind(c(1,1), c(1,-1), c(-1,1), c(-1,-1));
+testout=rbind(0,1,1,0)
+predict_testNN = compute(NN, testin)
+predict_testNN$neurons
+predict_testNN$net.result
+predict_out = as.numeric(predict_testNN$net.result>0.5)
+predict_out
+
+
+
+#winedata XOR
+setwd("H:/R/")
+getwd()
+library(neuralnet)
+#mydata = read.csv('H:/R/winedata2.csv', sep=",") 
+test = read.csv('H:/R/winedata2.csv', sep=",") 
+#Randomisation
+mydata = test[sample(130,130),]
+
+#Setting up class and values
+iclass = mydata[,1]
+iclass = iclass-1
+ivalues = mydata[,-1]
+
+#set up a training set 
+iclassTrain = iclass[1:65] 
+ivaluesTrain = ivalues[1:65,] 
+
+#setting up testset 
+iclassTest = iclass[66:130] 
+ivaluesTest = ivalues[66:130,] 
+
+#XOR gate input data
+trainin = ivaluesTrain
+#XOR gate output data
+trainout = iclassTrain
+#Combined OR gate data
+XORdat=cbind(trainout,trainin)
+
+#train a neural network on the XOR data
+set.seed(2)
+NN = neuralnet(XORdat[,1]~., XORdat[,2:3], hidden = c(3,3) , threshold = 0.01, stepmax = 1e+07, linear.output = FALSE)
+plot(NN)
+
+#testing the neural network
+testin = ivaluesTest
+testout= iclassTest
+predict_testNN = compute(NN, testin)
+predict_testNN$neurons
+predict_testNN$net.result
+predict_out = as.numeric(predict_testNN$net.result>0.5)
+#predict_out
+
+#Testing for accuracy
+n = length(testout) #the number of test cases 
+ncorrect = sum(predict_out==testout) #the number of correctly predicted 
+accuracy=ncorrect/n 
+print(n)
+print(ncorrect)
+print(accuracy)
