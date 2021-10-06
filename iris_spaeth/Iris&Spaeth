@@ -1,0 +1,117 @@
+setwd("H:/R/") #setting default work space
+mydata = read.csv('spaeth_01.csv', sep=",") 
+plot(mydata)
+
+#optional: prepare data
+mydata = na.omit(mydata) #deletion of missing data
+mydata = scale(mydata) #standardize variable 
+
+#Heirarchial Clustering
+d<-dist(mydata, method = "euclidean") #distance matrix
+
+fit <- hclust(d, method="single") #clustering
+plot(fit) #dendogram
+
+Hgroups <- cutree(fit, k=5) #cut tree into 5 clusters
+
+rect.hclust(fit, k=5, border="red") #Gives clusters borders
+
+plot(mydata, col=Hgroups) #cluster plot
+
+
+#K-means Clustering
+fit <- kmeans(mydata, 5) #5 cluster solution
+
+aggregate(mydata,by=list(fit$cluster), FUN=mean) #mean
+
+Kgroups = fit$cluster
+
+plot(mydata, col=Kgroups) #ScatterPLot
+
+source('H:/R/WK_R.r') #Reference code
+wk = WK_R(Kgroups, Hgroups) #Weighted Kappa 
+
+
+
+
+
+
+#<---------------------------ASSESSMENT-------------------------->#
+mydata = read.csv('H:/R/iris.csv', sep=",")
+result = read.csv('H:/R/iris_real.csv', sep=",")
+source('H:/R/WK_R.r') #Reference code
+R <- (result$X1)
+#optional: prepare data
+mydata = na.omit(mydata) #deletion of missing data
+mydata = scale(mydata) #standardize variable 
+
+#Assessed 1
+#K-means with k=2
+fit <- kmeans(mydata, 2) #2 cluster solution
+Kgroups2 = fit$cluster
+plot(mydata, col=Kgroups2) #ScatterPLot
+wk1 = WK_R(Kgroups2, R) #Weighted Kappa 
+
+#K-means with k=3
+fit <- kmeans(mydata, 3) #3 cluster solution
+Kgroups3 = fit$cluster
+plot(mydata, col=Kgroups3) #ScatterPLot
+wk2 = WK_R(Kgroups3, R) #Weighted Kappa 
+
+#K-means with k=4
+fit <- kmeans(mydata, 4) #4 cluster solution
+Kgroups4 = fit$cluster
+plot(mydata, col=Kgroups4) #ScatterPLot
+wk3 = WK_R(Kgroups4, R) #Weighted Kappa 
+
+#K-means with k=5
+fit <- kmeans(mydata, 5) #5 cluster solution
+Kgroups5 = fit$cluster
+plot(mydata, col=Kgroups5) #ScatterPLot
+wk4 = WK_R(Kgroups5, R) #Weighted Kappa 
+
+#K-means with k=6
+fit <- kmeans(mydata, 6) #6 cluster solution
+Kgroups6 = fit$cluster
+plot(mydata, col=Kgroups6) #ScatterPLot
+wk5 = WK_R(Kgroups6, R) #Weighted Kappa 
+
+plt <- c(wk1,wk2,wk3,wk4,wk5) #Weighted Kappa Array
+plot(plt, type="b") 
+
+
+mydata = read.csv('H:/R/iris.csv', sep=",")
+result = read.csv('H:/R/iris_real.csv', sep=",")
+R <- (result$X1)
+#Assessed 2
+#3 cluster with single
+ds<-dist(mydata, method = "euclidean") #distance matrix
+fits <- hclust(ds, method="single") #clustering
+plot(fits) #dendogram
+Hgroupss <- cutree(fits, k=3) #cut tree into 3 clusters
+rect.hclust(fits, k=3, border="red") #Gives clusters borders
+plot(mydata, col=Hgroupss) #cluster plot
+wks = WK_R(Hgroupss,R) 
+
+
+#3 cluster with complete
+dc<-dist(mydata, method = "euclidean") #distance matrix
+fitc <- hclust(dc, method="complete") #clustering
+plot(fitc) #dendogram
+Hgroupc <- cutree(fitc, k=3) #cut tree into 3 clusters
+rect.hclust(fitc, k=3, border="red") #Gives clusters borders
+plot(mydata, col=Hgroupc) #cluster plot
+wkc = WK_R(Hgroupc,R)
+
+#3 cluster with average
+da<-dist(mydata, method = "euclidean") #distance matrix
+fita <- hclust(da, method="average") #clustering
+plot(fita) #dendogram
+Hgroupa <- cutree(fita, k=3) #cut tree into 3 clusters
+rect.hclust(fita, k=3, border="red") #Gives clusters borders
+plot(mydata, col=Hgroupa) #cluster plot
+wka = WK_R(Hgroupa,R)
+
+
+ded <- c(wks,wkc,wka) #Weighted Kappa Array
+plot(ded, type="b") 
